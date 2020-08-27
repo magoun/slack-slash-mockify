@@ -1,3 +1,4 @@
+.composer/
 vendor/
 logs/*
 composer.lock
