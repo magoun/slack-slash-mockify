@@ -1,8 +1,9 @@
 <?php
 
 $text = $_POST['text'];
-// $text = "testing a longer sentence!";
-// var_dump($text); return;
+const MAX_CONSECUTIVE_TYPE = 3;
+// $text = "t e s t i n g a l o n g e r s e n t e n c e!";
+// var_dump($text); die;
 
 $stringArray = str_split($text);
 $mockifiedArray = [];
@@ -12,14 +13,27 @@ function mockifyChar($char) {
   static $upper = 0;
   static $lower = 0;
   
-  if (ctype_alpha($char)) {
-    if (rand(0, $upper + $lower + 1) > $lower) {
-      $lower += ($upper - $lower) ** 2;
-      return strtolower($char);
+  $upChar = function($char) use (&$upper, &$lower) {
+    $upper++;
+    $lower = 0;
+    return strtoupper($char);
+  };
+  
+  $downChar = function($char) use (&$lower, &$upper) {
+    $lower++;
+    $upper = 0;
+    return strtolower($char);
+  };
+  
+  if (preg_match('/[a-zA-Z]/', $char)) {
+    if (abs($upper - $lower) >= MAX_CONSECUTIVE_TYPE) {
+      return $upper > $lower ? $downChar($char) : $upChar($char);
+    }
+    else if (rand(0, $upper + $lower + 1) > $lower) {
+      return $downChar($char);
     }
     else {
-      $upper += ($upper - $lower) ** 2;
-      return strtoupper($char);
+      return $upChar($char);
     }
   }
   else {
@@ -35,8 +49,8 @@ $mockifiedText = implode($mockifiedArray);
 
 header('Content-type: application/json');
 $response = [
-  // 'response_type' => 'in_channel',
-  'response_type' => 'ephemeral',
+  'response_type' => 'in_channel',
+  // 'response_type' => 'ephemeral',
   'text' => $mockifiedText,
 ];
 
