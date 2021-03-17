@@ -10,11 +10,24 @@ function clapify($text) {
   return $first === 'clapify';
 }
 
+function shopify($text) {
+  $first = explode(" ", $text)[0];
+  return $first === 'shopify';
+}
+
+
+
 if (clapify($text)) {
   
-  $deClapifiedString = ltrim($text, 'clapify ');
+  $deClapifiedString = substr($text, 8);
   $clapifiedString = str_replace(' ', ':clap:', $deClapifiedString) . ':clap:';
   $returnText = strtoupper($clapifiedString);
+  
+}
+else if (shopify($text)) {
+  
+  $deShopifiedString = substr($text, 8);
+  $returnText = 'lettuce turnip the beets';
   
 }
 else {
