@@ -15,6 +15,16 @@ function shopify($text) {
   return $first === 'shopify';
 }
 
+function debinify($text) {
+  $first = explode(" ", $text)[0];
+  return $first === 'debinify';
+}
+
+function binify($text) {
+  $first = explode(" ", $text)[0];
+  return $first === 'binify';
+}
+
 
 
 if (clapify($text)) {
@@ -28,6 +38,32 @@ else if (shopify($text)) {
   
   $deShopifiedString = substr($text, 8);
   $returnText = 'lettuce turnip the beets';
+  
+}
+else if (binify($text)) {
+  
+  $string = substr($text, 7);
+  $characters = str_split($string);
+
+  $binary = [];
+  foreach ($characters as $character) {
+    $data = unpack('H*', $character);
+    $binary[] = base_convert($data[1], 16, 2);
+  }
+
+  $returnText = 'Binification: ' . implode(' ', $binary);
+}
+else if (debinify($text)) {
+  
+  $binString = substr($text, 9);
+  $string = '';
+  $binaries = explode(' ', $binString);
+  
+  foreach ($binaries as $binary) {
+    $string .= pack('H*', dechex(bindec($binary)));
+  }
+  
+  $returnText = 'Debinification: ' . $string;
   
 }
 else {
