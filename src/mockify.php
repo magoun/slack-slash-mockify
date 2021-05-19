@@ -1,6 +1,6 @@
 <?php
 
-$text = 'flagify more money';
+$text = $_POST['text'];
 const MAX_CONSECUTIVE_TYPE = 3;
 // $text = "t e s t i n g a l o n g e r s e n t e n c e!";
 // var_dump($text); die;
