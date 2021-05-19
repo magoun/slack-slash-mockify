@@ -1,6 +1,6 @@
 <?php
 
-$text = $_POST['text'];
+$text = 'flagify 88hello';
 const MAX_CONSECUTIVE_TYPE = 3;
 // $text = "t e s t i n g a l o n g e r s e n t e n c e!";
 // var_dump($text); die;
@@ -304,7 +304,7 @@ else if (flagify($text)) {
   $message = '';
   while($count < strlen($text)) {
     if (!ctype_alpha(substr($text, $count, 1))) {
-      $message .= ' ';
+      $message .= substr($text, $count, 1);
       $count++;
     }
     else if ($count + 2 < strlen($text)) {
