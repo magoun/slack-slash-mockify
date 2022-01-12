@@ -28,11 +28,22 @@ function flagify($text) {
   return $first === 'flagify';
 }
 
+function swearify($text) {
+  $first = explode(" ", $text)[0];
+  return $first === 'swearify';
+}
+
 if (clapify($text)) {
   
   $deClapifiedString = substr($text, 8);
   $clapifiedString = str_replace(' ', ':clap:', $deClapifiedString) . ':clap:';
   $returnText = strtoupper($clapifiedString);
+  
+}
+else if (swearify($text)) {
+  
+  $SWEARS = require_once './assets/clean-swears.php';
+  $returnText = $SWEARS[array_rand($SWEARS)];
   
 }
 else if (shopify($text)) {
@@ -156,6 +167,9 @@ else {
   $returnText = implode($mockifiedArray);
   
 }
+
+// The ban hammer
+// $returnText = "Stop it, Luke.";
 
 header('Content-type: application/json');
 $response = [
