@@ -3,57 +3,58 @@
 $text = $_POST['text'];
 const MAX_CONSECUTIVE_TYPE = 3;
 
+$first = explode(" ", $text)[0];
+
+switch ($first) {
+  case 'clapify':
+    $returnText = clapify($text);
+    break;
+  case 'shopify':
+    $returnText = shopify($text);
+    break;
+  case 'debinify':
+    $returnText = debinify($text);
+    break;
+  case 'binify':
+    $returnText = binify($text);
+    break;
+  case 'flagify':
+    $returnText = flagify($text);
+    break;
+  case 'swearify':
+    $returnText = swearify($text);
+    break;
+  case 'timezonify':
+    $returnText = timezonify($text);
+    break;
+  default:
+    $returnText = mockify($text);
+}
+
 function clapify($text) {
-  $first = explode(" ", $text)[0];
-  return $first === 'clapify';
+  $deClapifiedString = substr($text, 8);
+  $clapifiedString = str_replace(' ', ':clap:', $deClapifiedString) . ':clap:';
+  return strtoupper($clapifiedString);
 }
 
 function shopify($text) {
-  $first = explode(" ", $text)[0];
-  return $first === 'shopify';
+  $deShopifiedString = substr($text, 8);
+  return 'lettuce turnip the beets';
 }
 
 function debinify($text) {
-  $first = explode(" ", $text)[0];
-  return $first === 'debinify';
+  $binString = substr($text, 9);
+  $string = '';
+  $binaries = explode(' ', $binString);
+  
+  foreach ($binaries as $binary) {
+    $string .= pack('H*', dechex(bindec($binary)));
+  }
+  
+  return 'Debinification: ' . $string;
 }
 
 function binify($text) {
-  $first = explode(" ", $text)[0];
-  return $first === 'binify';
-}
-
-function flagify($text) {
-  $first = explode(" ", $text)[0];
-  return $first === 'flagify';
-}
-
-function swearify($text) {
-  $first = explode(" ", $text)[0];
-  return $first === 'swearify';
-}
-
-if (clapify($text)) {
-  
-  $deClapifiedString = substr($text, 8);
-  $clapifiedString = str_replace(' ', ':clap:', $deClapifiedString) . ':clap:';
-  $returnText = strtoupper($clapifiedString);
-  
-}
-else if (swearify($text)) {
-  
-  $SWEARS = require_once './assets/clean-swears.php';
-  $returnText = $SWEARS[array_rand($SWEARS)];
-  
-}
-else if (shopify($text)) {
-  
-  $deShopifiedString = substr($text, 8);
-  $returnText = 'lettuce turnip the beets';
-  
-}
-else if (binify($text)) {
-  
   $string = substr($text, 7);
   $characters = str_split($string);
 
@@ -63,24 +64,10 @@ else if (binify($text)) {
     $binary[] = base_convert($data[1], 16, 2);
   }
 
-  $returnText = 'Binification: ' . implode(' ', $binary);
-  
+  return 'Binification: ' . implode(' ', $binary);
 }
-else if (debinify($text)) {
-  
-  $binString = substr($text, 9);
-  $string = '';
-  $binaries = explode(' ', $binString);
-  
-  foreach ($binaries as $binary) {
-    $string .= pack('H*', dechex(bindec($binary)));
-  }
-  
-  $returnText = 'Debinification: ' . $string;
-  
-}
-else if (flagify($text)) {
-  
+
+function flagify($text) {
   $FLAG_CODES = require_once './assets/flag-codes.php';
   
   $text = substr($text, 8);
@@ -119,11 +106,15 @@ else if (flagify($text)) {
     }
   }
 
-  $returnText = $message;
-
+  return $message;
 }
-else {
- 
+
+function swearify($text) {
+  $SWEARS = require_once './assets/clean-swears.php';
+  return $SWEARS[array_rand($SWEARS)];
+}
+
+function mockify($text) {
   $stringArray = str_split($text);
   $mockifiedArray = [];
 
@@ -164,8 +155,70 @@ else {
     $mockifiedArray[] = mockifyChar($char);
   }
 
-  $returnText = implode($mockifiedArray);
+  return implode($mockifiedArray);
+}
+
+function timezonify($text) {
   
+  $input = substr($text, 11); // de-timezonify
+  
+  $times = [
+      "pacific" => [ "offset" => -2, "name" => ["Pacific Time"] ],
+      "central" => [ "offset" => 0, "name" => ["Central Time"] ],
+      "eastern" => [ "offset" => 1, "name" => ["Eastern Time"] ],
+      "brazil" => [ "offset" => 3, "name" => ["Brasilia Time"] ],
+      "india" => [ "offset" => 11.5, "name" => ["India Time"] ]
+  ];
+
+  $output = [];
+  $message = "";
+  $parts = explode(" ", $input);
+  $time_parts = explode(":", $parts[0]);
+  if($parts[1]) {
+      unset($parts[0]);
+      $message = implode(" ", $parts);
+  }
+
+  foreach($times as $zone) {
+      $offset = $zone["offset"];
+      $working = intval($time_parts[0]) + $offset;
+
+      if(!$working) {
+          $working = 12;
+      }
+
+      $ampm = intval($working) >= 12 ? "pm" : "am";
+      $minutes = ":" . $time_parts[1];
+
+      if($working >= 24) {
+          if($working > 24) {
+              $working = ($working - 24);
+              $ampm = "am";
+          } else {
+              $working = 12;
+          }
+      } else {
+          if($working >= 12) {
+              if($working > 12) {
+                  $working = ($working - 12);
+              }
+          } else {
+              $ampm = "am";
+          }
+      }
+      if(floor($working) != $working) {
+          $working = $minutes == ":00" ? floor($working) : ceil($working);
+          $minutes = $minutes == ":00" ? ":30" : ":00";
+      }
+      $working .= $minutes . $ampm;
+      $output[] = implode(", ", $zone["name"]) . ": " . $working;
+  }
+
+  if($message) {
+      array_unshift($output, $message);
+  }
+
+  return implode("\n", $output);
 }
 
 // The ban hammer
