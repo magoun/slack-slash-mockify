@@ -1,0 +1,22 @@
+{
+  "name": "slack-slash-mockify",
+  "version": "0.0.1",
+  "description": "Example project showing how to use Go on Gltich",
+  "author": "Creighton Magoun",
+  "main": "server.js",
+  "scripts": {
+    "start": "go run main.go"
+  },
+  "engines": {
+    "node": "6.10.x"
+  },
+  "repository": {
+    "url": "https://glitch.com/edit/#!/go-example"
+  },
+  "license": "MIT",
+  "keywords": [
+    "node",
+    "glitch",
+    "go"
+  ]
+}
