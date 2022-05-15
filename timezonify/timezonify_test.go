@@ -12,8 +12,8 @@ func TestTimezonify(t *testing.T) {
 		"Pacific Time: 12:30pm",
 		"Central Time: 2:30pm",
 		"Eastern Time: 3:30pm",
-		"Brasilia Time: 5:30pm",
-		"India Time: 2:00am",
+		"Brasilia Time: 4:30pm",
+		"India Time: 1:00am",
 	}
 
 	result := Timezonify(data)
